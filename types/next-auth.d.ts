@@ -3,7 +3,7 @@ declare module "next-auth" {
         id: string;
         name: string;
         email: string;
-        role: "user" | "admin" | "deliveryBoy";
+        role: string;
     }
 }
 
