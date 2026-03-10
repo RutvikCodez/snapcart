@@ -7,6 +7,8 @@ import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { registerFields, registerFormSchema } from "@/constants";
+import axios from "axios";
+import { toast } from "sonner";
 
 export function RegisterForm() {
   const form = useForm<z.infer<typeof registerFormSchema>>({
@@ -18,10 +20,25 @@ export function RegisterForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof registerFormSchema>) {
-    console.log(data);
-  }
+  async function onSubmit(data: z.infer<typeof registerFormSchema>) {
+    const { email, name, password } = data;
 
+    toast.promise(
+      axios.post("/api/auth/register", {
+        email,
+        name,
+        password,
+      }),
+      {
+        loading: "Creating account...",
+        success: (res) => {
+          form.reset();
+          return res.data.message || "Account created successfully";
+        },
+        error: "Failed to create account",
+      },
+    );
+  }
   return (
     <div className="flex w-full justify-center items-center flex-col gap-6 sm:max-w-md">
       <div className="flex flex-col gap-2 text-center">
