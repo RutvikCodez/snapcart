@@ -1,3 +1,4 @@
+import { Bike, User, UserRoundPlus } from "lucide-react";
 import * as z from "zod";
 
 export const registerFormSchema = z.object({
@@ -30,3 +31,29 @@ export const loginFields = [
   { name: "email", type: "email", placeholder: "Your Email" },
   { name: "password", type: "password", placeholder: "Your Password" },
 ] as const;
+
+export const userRoles = [
+  {
+    Icon: User,
+    id: "user",
+    title: "User",
+  },
+  {
+    Icon: UserRoundPlus,
+    id: "admin",
+    title: "Admin",
+  },
+  {
+    Icon: Bike,
+    id: "deliveryBoy",
+    title: "Delivery Boy",
+  },
+] as const;
+
+export const editRoleMobileFormSchema = z.object({
+  role: z.string().min(1, "You must select a subscription plan to continue."),
+  mobile: z
+    .string()
+    .min(10, "Mobile number must be at least 10 digits.")
+    .max(10, "Mobile number must be at most 10 digits."),
+});
