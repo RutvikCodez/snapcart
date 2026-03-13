@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import connectToDatabase from "./lib/db";
 import User from "./models/user.model";
 import bcrypt from "bcryptjs";
+import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -36,6 +37,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return null;
       },
     }),
+
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    })
   ],
 
   callbacks: {
@@ -48,6 +54,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return token;
     },
+
     session: async ({ session, token }) => {
       if (session.user) {
         session.user.id = token.id as string;
@@ -56,6 +63,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.role = token.role as string;
       }
       return session;
+    },
+
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        try {
+          await connectToDatabase();
+          let dbUser = await User.findOne({ email: user.email })
+          if (!dbUser) {
+            dbUser = await User.create({
+              name: user.name,
+              email: user.email,
+              Image: user.image,
+            });
+          }
+          user.id = dbUser._id.toString();
+          user.role = dbUser.role;
+          return true;
+        } catch (error) {
+          console.error("Error during Google sign-in:", error);
+          return false;
+        } 
+      }
+      return true;
     },
   },
 

@@ -10,6 +10,7 @@ import { registerFields, registerFormSchema } from "@/constants";
 import axios from "axios";
 import { toast } from "sonner";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 export function RegisterForm() {
   const form = useForm<z.infer<typeof registerFormSchema>>({
@@ -94,6 +95,7 @@ export function RegisterForm() {
         type="button"
         form="form-rhf-demo"
         className="w-full text-primary bg-transparent border-secondary py-5 text-base flex items-center gap-2 justify-center"
+        onClick={()=>signIn("google")}
       >
         <Image
           src="https://www.svgrepo.com/show/475656/google-color.svg"

@@ -14,7 +14,7 @@ const userSchema = new Schema<UserModelType>(
     },
     password: {
       type: String,
-      required: true,
+      required: false,
     },
     mobile: {
       type: String,
@@ -25,6 +25,9 @@ const userSchema = new Schema<UserModelType>(
       enum: ["user", "admin", "deliveryBoy"],
       default: "user",
     },
+    image: {
+      type: String,
+    }
   },
   { timestamps: true },
 );
