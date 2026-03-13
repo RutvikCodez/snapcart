@@ -95,7 +95,7 @@ export function RegisterForm() {
         type="button"
         form="form-rhf-demo"
         className="w-full text-primary bg-transparent border-secondary py-5 text-base flex items-center gap-2 justify-center"
-        onClick={()=>signIn("google")}
+        onClick={()=>signIn("google", {callbackUrl: "/"})}
       >
         <Image
           src="https://www.svgrepo.com/show/475656/google-color.svg"
