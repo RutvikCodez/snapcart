@@ -17,3 +17,16 @@ export const registerFields = [
   { name: "email", type: "email", placeholder: "Your Email" },
   { name: "password", type: "password", placeholder: "Your Password" },
 ] as const;
+
+export const loginFormSchema = z.object({
+  email: z.string().email("Please enter a valid email."),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters.")
+    .max(100, "Password must be at most 100 characters."),
+});
+
+export const loginFields = [
+  { name: "email", type: "email", placeholder: "Your Email" },
+  { name: "password", type: "password", placeholder: "Your Password" },
+] as const;

@@ -6,46 +6,40 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import { registerFields, registerFormSchema } from "@/constants";
-import axios from "axios";
+import { loginFormSchema, loginFields } from "@/constants";
 import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 
-export function RegisterForm() {
-  const form = useForm<z.infer<typeof registerFormSchema>>({
-    resolver: zodResolver(registerFormSchema),
+export function LoginForm() {
+  const form = useForm<z.infer<typeof loginFormSchema>>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
     },
   });
 
-  async function onSubmit(data: z.infer<typeof registerFormSchema>) {
-    const { email, name, password } = data;
+  async function onSubmit(data: z.infer<typeof loginFormSchema>) {
+    const { email, password } = data;
 
-    toast.promise(
-      axios.post("/api/auth/register", {
-        email,
-        name,
-        password,
-      }),
-      {
-        loading: "Creating account...",
-        success: (res) => {
-          form.reset();
-          return res.data.message || "Account created successfully";
-        },
-        error: "Failed to create account",
+    const promise = signIn("credentials", { email, password });
+
+    toast.promise(promise, {
+      loading: "Signing in...",
+      success: () => {
+        form.reset();
+        return "Login successful";
       },
-    );
+      error: "Invalid email or password",
+    });
   }
   return (
     <div className="flex w-full justify-center items-center flex-col gap-6 sm:max-w-md">
       <div className="flex flex-col gap-2 text-center">
-        <h1 className="text-primary text-5xl font-bold">Create Account</h1>
+        <h1 className="text-primary text-5xl font-bold">Welcome Back</h1>
         <h2 className="text-secondary-foreground text-xl font-normal">
-          Join Snapcart today!
+          Login To Snapcart!
         </h2>
       </div>
       <form
@@ -54,7 +48,7 @@ export function RegisterForm() {
         className="w-full sm:max-w-md flex flex-col gap-6"
       >
         <FieldGroup>
-          {registerFields.map((item) => (
+          {loginFields.map((item) => (
             <Controller
               key={item.name}
               name={item.name}
@@ -104,9 +98,9 @@ export function RegisterForm() {
         Continue with Google
       </Button>
       <p>
-        Already have an account?{" "}
-        <Link href="/login" className="text-primary underline">
-          Sign In
+        Want to create an account?{" "}
+        <Link href="/register" className="text-primary underline">
+          Sign Up
         </Link>
       </p>
     </div>
